@@ -85,7 +85,7 @@ class ResourceBuilder
                 if ($this->useDynamicEntries) {
                     $contentType = $metadata->getContentType();
                     if ($contentType instanceof Link) {
-                        $contentType = call_user_func($this->resolveLinkFunction, $contentType);
+                        $contentType = call_user_func($this->resolveLinkFunction, $contentType, $metadata);
                     }
                     $entry = new DynamicEntry($entry, $contentType);
                 }

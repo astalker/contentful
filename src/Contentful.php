@@ -279,11 +279,12 @@ class Contentful
     }
 
     /**
-     * @param Link   $link
-     * @param string $locale
+     * @param Link              $link
+     * @param MetadataInterface $linkerMetadata
+     * @param string            $locale
      * @return ResourceInterface
      */
-    public function resolveLink($link, $locale = null)
+    public function resolveLink($link, MetadataInterface $linkerMetadata = null, $locale = null)
     {
         //check whether the "link" is already actually a resolved resource
         if ($link instanceof ResourceInterface) {
@@ -293,6 +294,7 @@ class Contentful
         if ($locale) {
             $options['locale'] = $locale;
         }
+        $space = ($linkerMetadata) ? $linkerMetadata->getSpace() : null;
         try {
             switch ($link->getLinkType()) {
                 case 'Entry':
@@ -551,8 +553,8 @@ class Contentful
         static $resourceBuilder;
         if (empty($resourceBuilder)) {
             $resourceBuilder = new ResourceBuilder($this->envelope);
-            $resourceBuilder->setResolveLinkFunction(function ($link) use ($locale) {
-                return $this->resolveLink($link, $locale);
+            $resourceBuilder->setResolveLinkFunction(function ($link, MetadataInterface $linkerMetadata = null) use ($locale) {
+                return $this->resolveLink($link, $linkerMetadata, $locale);
             });
             $resourceBuilder->setUseDynamicEntries($this->useDynamicEntries);
         }
